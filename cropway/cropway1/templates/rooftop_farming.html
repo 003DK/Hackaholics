@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SkyHarvest - Urban Farming Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Open Sans', sans-serif;
+      background: linear-gradient(to bottom, #1b3c1a, #355e2c);
+      color: #eafae1;
+      overflow-x: hidden;
+    }
+    .overlay {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(20, 40, 20, 0.5);
+      top: 0; left: 0;
+      z-index: 0;
+    }
+    .container {
+      position: relative;
+      z-index: 1;
+      padding: 4rem 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      text-align: center;
+      animation: fadeIn 1.4s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #d1ffb0;
+    }
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      color: #f4fdf0;
+    }
+    form {
+      background-color: rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 2rem 0;
+      box-shadow: 0 0 10px rgba(150, 255, 150, 0.2);
+    }
+    form h2 {
+      color: #c3ff99;
+      margin-bottom: 0.5rem;
+    }
+    select, button {
+      padding: 0.8rem 1rem;
+      margin: 0.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      width: 80%;
+      max-width: 400px;
+    }
+    button {
+      background-color: #a7c957;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      background-color: #8cb339;
+      transform: scale(1.05);
+    }
+    #cropSuggestion {
+      margin-top: 1rem;
+      font-weight: bold;
+      color: #d9ffc8;
+    }
+    .modal, .overlay-modal {
+      display: none;
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fffdf3;
+      padding: 2rem;
+      border-radius: 15px;
+      z-index: 1001;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      width: 90%; max-width: 500px;
+      color: #333;
+      text-align: left;
+    }
+    .overlay-modal {
+      top: 0; left: 0;
+      transform: none;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+    }
+    .modal ul {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    .tools {
+      margin-top: 3rem;
+      list-style: none;
+    }
+    .tools li {
+      margin: 0.5rem 0;
+      font-size: 1.1rem;
+      color: #defcce;
+    }
+    .tools li::before {
+      content: "🌱 ";
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  <div class="container">
+    <h1>Welcome to SkyHarvest 🌇</h1>
+    <p>No land? No problem! Learn how to grow your own food in urban spaces.</p>
+
+    <form>
+      <h2>What to Grow?</h2>
+      <p>Select your space and plant interest:</p>
+      <select id="space">
+        <option value="">-- Select Your Space --</option>
+        <option value="balcony">Balcony</option>
+        <option value="terrace">Terrace</option>
+        <option value="indoor">Indoor Shelf</option>
+      </select><br>
+      <select id="goal">
+        <option value="">-- What do you want? --</option>
+        <option value="herbs">Grow Herbs</option>
+        <option value="veggies">Grow Vegetables</option>
+        <option value="flowers">Grow Decorative Plants</option>
+      </select><br>
+      <button type="button" onclick="suggestCrop()">Suggest Me</button>
+      <button type="button" onclick="showCostGuide()">💰 Cost Guide</button>
+      <button type="button" onclick="showSteps()">🛠 Installation</button>
+    </form>
+
+    <div id="cropSuggestion"></div>
+
+    <!-- Cost Modal -->
+    <div class="overlay-modal" id="costOverlay"></div>
+    <div class="modal" id="costModal">
+      <h2>💰 Estimated Setup Cost</h2>
+      <ul id="costList"></ul>
+      <p id="costTotal"><strong>Total: ₹0</strong></p>
+      <button onclick="closeModal('costModal', 'costOverlay')">Close</button>
+    </div>
+
+    <!-- Instructions Modal -->
+    <div class="overlay-modal" id="stepOverlay"></div>
+    <div class="modal" id="stepModal">
+      <h2>🛠 Basic Installation Steps</h2>
+      <ul id="stepList"></ul>
+      <button onclick="closeModal('stepModal', 'stepOverlay')">Close</button>
+    </div>
+
+    <!-- More Tips Button and Modal -->
+    <button onclick="openTipModal()" style="margin-top: 2rem; padding: 0.8rem 2rem; background-color: #5cb85c; color: #fff; border: none; border-radius: 10px; font-size: 1rem; font-weight: bold; cursor: pointer;">
+      🌱 More Tips
+    </button>
+
+    <div class="overlay-modal" id="tipOverlay"></div>
+    <div class="modal" id="tipModal">
+      <h2>Urban Gardening Tips 🌼</h2>
+      <ul style="text-align:left; font-size:1rem;">
+        <li>✔️ Use cocopeat & compost for light, fertile soil</li>
+        <li>✔️ Reuse kitchen water for eco-friendly watering</li>
+        <li>✔️ Grow leafy greens in partial sunlight</li>
+        <li>✔️ Add neem oil spray to prevent pests naturally</li>
+        <li>✔️ Label your containers and track growth</li>
+        <li>✔️ Rotate plant positions for even sunlight exposure</li>
+        <li>✔️ Clean leaves with a wet cloth to prevent dust buildup</li>
+        <li>✔️ Use banana peel water as a potassium-rich fertilizer</li>
+        <li>✔️ Use crushed eggshells to deter pests and boost calcium</li>
+        <li>✔️ Water in the early morning to prevent evaporation</li>
+        <li>✔️ Harvest herbs regularly to encourage new growth</li>
+        <li>✔️ Check drainage holes to avoid root rot</li>
+        <li>✔️ Keep a simple diary or app log for watering and growth</li>
+      </ul>
+      <button onclick="closeTipModal()" style="margin-top:1rem; padding:0.5rem 1.5rem; background-color:#a7c957; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Close</button>
+    </div>
+
+    <!-- Tool List -->
+    <ul class="tools">
+      <h2 style="color: #c8ff9e;">Tools You’ll Need</h2>
+      <li>Grow Bags or Pots</li>
+      <li>Organic Potting Mix</li>
+      <li>Water Sprayer</li>
+      <li>Compost or Fertilizer</li>
+      <li>Sunlight or LED Grow Light</li>
+    </ul>
+  </div>
+
+  <script>
+    function suggestCrop() {
+      const space = document.getElementById('space').value;
+      const goal = document.getElementById('goal').value;
+      let msg = "";
+
+      if (!space || !goal) {
+        alert("Please select both space and goal.");
+        return;
+      }
+
+      if (goal === "herbs") {
+        msg = "🌿 Try basil, mint, or coriander. Great for all spaces!";
+      } else if (goal === "veggies") {
+        msg = space === "indoor" ? "🍅 Try microgreens or spinach near sunlight." : "🥬 Grow tomatoes, chillies, or okra!";
+      } else if (goal === "flowers") {
+        msg = space === "indoor" ? "🌸 Peace lily or indoor marigold work well!" : "🌼 Try petunia, marigold, or hibiscus.";
+      }
+
+      document.getElementById('cropSuggestion').innerText = msg;
+    }
+
+    function showCostGuide() {
+      const goal = document.getElementById('goal').value;
+      const costList = document.getElementById('costList');
+      const total = document.getElementById('costTotal');
+
+      if (!goal) {
+        alert("Select your plant type to show cost.");
+        return;
+      }
+
+      let html = '', range = '';
+      if (goal === 'herbs') {
+        html = `
+          <li>🌱 Small Pots: ₹100 - ₹200</li>
+          <li>🪴 Compost & Cocopeat: ₹200</li>
+          <li>💦 Water Sprayer: ₹150</li>`;
+        range = "₹450 - ₹600";
+      } else if (goal === 'veggies') {
+        html = `
+          <li>🥬 Grow Bags: ₹250</li>
+          <li>🪴 Soil Mix: ₹300</li>
+          <li>💦 Sprayer & Stakes: ₹200</li>`;
+        range = "₹700 - ₹900";
+      } else if (goal === 'flowers') {
+        html = `
+          <li>🌸 Decorative Pots: ₹200</li>
+          <li>🌿 Flower Mix: ₹250</li>
+          <li>💦 Pebbles & Sprayer: ₹200</li>`;
+        range = "₹600 - ₹800";
+      }
+
+      costList.innerHTML = html;
+      total.innerHTML = `<strong>Total: ${range}</strong>`;
+      document.getElementById('costModal').style.display = "block";
+      document.getElementById('costOverlay').style.display = "block";
+    }
+
+    function showSteps() {
+      const goal = document.getElementById('goal').value;
+      const stepList = document.getElementById('stepList');
+      if (!goal) {
+        alert("Select your goal to view installation steps.");
+        return;
+      }
+
+      let steps = '';
+      if (goal === "herbs") {
+        steps = `
+          <li>1. Fill pots with cocopeat and compost mix.</li>
+          <li>2. Sow herb seeds shallowly, water gently.</li>
+          <li>3. Place in partial sunlight and water daily.</li>`;
+      } else if (goal === "veggies") {
+        steps = `
+          <li>1. Use deep grow bags and fill with potting mix.</li>
+          <li>2. Sow seeds or transplant saplings.</li>
+          <li>3. Support with sticks and water twice daily.</li>`;
+      } else if (goal === "flowers") {
+        steps = `
+          <li>1. Fill decorative pots with flower soil mix.</li>
+          <li>2. Plant flowering plants and add pebbles.</li>
+          <li>3. Keep in sunlight and fertilize weekly.</li>`;
+      }
+
+      stepList.innerHTML = steps;
+      document.getElementById('stepModal').style.display = "block";
+      document.getElementById('stepOverlay').style.display = "block";
+    }
+
+    function closeModal(modalId, overlayId) {
+      document.getElementById(modalId).style.display = "none";
+      document.getElementById(overlayId).style.display = "none";
+    }
+
+    function openTipModal() {
+      document.getElementById("tipModal").style.display = "block";
+      document.getElementById("tipOverlay").style.display = "block";
+    }
+
+    function closeTipModal() {
+      document.getElementById("tipModal").style.display = "none";
+      document.getElementById("tipOverlay").style.display = "none";
+    }
+  </script>
+</body>
+</html>

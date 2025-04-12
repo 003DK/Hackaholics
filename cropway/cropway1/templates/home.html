@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CropWay - Intelligent Agriculture Solutions</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Reset and Basic Styling */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            background-color: #f9f9f9;
+            color: #444;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Header */
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        nav ul {
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav ul li a {
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #a7c957;
+            /* A professional accent color */
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .hamburger div {
+            width: 28px;
+            height: 3px;
+            background-color: #fff;
+            margin: 5px 0;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.open div:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+
+        .hamburger.open div:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.open div:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+
+        nav ul.mobile-nav {
+            display: none;
+            flex-direction: column;
+            background-color: #333;
+            position: absolute;
+            top: 65px;
+            right: 0;
+            width: 100%;
+            text-align: center;
+            padding: 1rem 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        nav ul.mobile-nav.active {
+            display: flex;
+        }
+
+        nav ul.mobile-nav li {
+            padding: 0.8rem 0;
+        }
+
+        nav ul.mobile-nav li a {
+            font-size: 1.1rem;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            padding: 10px 20px;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .create-btn {
+            background-color: #4CAF50;
+            /* Green */
+            color: white;
+        }
+
+        .create-btn:hover {
+            background-color: #45a049;
+        }
+
+        .login-btn {
+            background-color: #007BFF;
+            /* Blue */
+            color: white;
+        }
+
+        .login-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Hero Section */
+        .hero {
+            background-image: url('https://media-hosting.imagekit.io/bc1820d016b34e47/vecteezy_agricultural-tractor-with-attachments-drives-through-farm_30904095.jpg?Expires=1838984656&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=QLLKwXtJjerMu~8U7RKlQWuWaqydw5jx7gyha19dFzK-fipSyek0M-jAmrxnLAWTUPVsEGNBOC1TyNdwFhTIOi4m4V9eQVeHdP2dfQlLi3b30rQ3bQiB~Ai~Uef0xCsU6njg8HQFod5w3mdOux-0NpwKqwcratPSFM51WKmj-87BM2faBykZj92ARtm8c1tPOmaumEavKIfR~b9mreSbqu2TQh2AhrIEg5xGUu2MQJvO9NhPBg87R7NnWnTa6AhGRDnj-YszOaVvrp4S5ycmMExmqjDbLpTQEhLSRN4BHIcACMoOTyFzAJLXzVGB6pNL5L-1hHAKGYAk6US0Iklo4w__');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            padding: 5rem 2rem;
+            text-align: center;
+            color: #fff;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h2 {
+            font-family: 'Roboto', sans-serif;
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: #fff;
+            /* changed from #333 to white */
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #fff;
+            /* changed from #555 to white */
+            margin-bottom: 2rem;
+        }
+
+        .hero-cta {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background-color: #a7c957;
+            color: #fff;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+        }
+
+        .hero-cta:hover {
+            background-color: #8cb339;
+            transform: scale(1.05);
+        }
+
+        .hero-cta:active {
+            transform: scale(0.95);
+        }
+
+        /* Sections */
+        .section {
+            padding: 3rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+            text-align: center;
+        }
+
+        .section p,
+        .section ul {
+            font-size: 1rem;
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .section ul li {
+            margin-bottom: 0.8rem;
+            list-style-type: disc;
+            margin-left: 1.2rem;
+        }
+
+        .section ul strong {
+            font-weight: 700;
+            color: #333;
+        }
+
+        /* Contact Section */
+        #contact {
+            background-color: #f5f9f6;
+            padding: 60px 20px;
+            text-align: center;
+            font-family: 'Segoe UI', sans-serif;
+            animation: fadeInUp 1s ease-in-out;
+        }
+
+        /* Animation Keyframes */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Title Animation */
+        .section-title {
+            font-size: 2.5rem;
+            color: #2b7a0b;
+            margin-bottom: 20px;
+            animation: slideDown 1s ease-out;
+        }
+
+        @keyframes slideDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Paragraph Styling */
+        #contact p {
+            font-size: 1rem;
+            color: #444;
+            margin-bottom: 20px;
+            animation: fadeIn 1.2s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Email Link Styling */
+        #contact a {
+            color: #2b7a0b;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        #contact a:hover {
+            text-decoration: underline;
+        }
+
+        /* Form Styling */
+        #contact form {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            animation: fadeInUp 1.3s ease-in-out;
+        }
+
+        /* Input and Textarea Styling */
+        #contact input[type="text"],
+        #contact input[type="email"],
+        #contact textarea {
+            padding: 12px 16px;
+            border: 2px solid #cce5cc;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            resize: vertical;
+            background-color: #fff;
+        }
+
+        #contact input:focus,
+        #contact textarea:focus {
+            border-color: #2b7a0b;
+            box-shadow: 0 0 8px rgba(43, 122, 11, 0.3);
+            outline: none;
+            transform: scale(1.02);
+        }
+
+        /* Button Styling */
+        #contact button[type="submit"] {
+            padding: 12px;
+            background-color: #2b7a0b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: popIn 1.5s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes popIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+        }
+
+        #contact button[type="submit"]:hover {
+            background-color: #256c09;
+            transform: scale(1.05);
+        }
+
+        #contact button[type="submit"]:active {
+            transform: scale(0.97);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2.5rem;
+            background-color: #222;
+            color: #fff;
+            font-size: 0.9rem;
+            border-top: 1px solid #444;
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        @media (min-width: 769px) {
+            nav ul.mobile-nav {
+                display: none !important;
+                /* Ensure mobile nav is hidden on larger screens */
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <header>
+        <a href="#" class="logo">CropWay</a>
+        <nav>
+            <div class="hamburger" onclick="toggleMenu()">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <ul id="nav-links">
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#stories">Success Stories</a></li>
+                <li><a href="#schemes">Government Initiatives</a></li>
+                <li><a href="#insights">Precision Farming Insights</a></li>
+                <li><a href="#contact">Contact Us</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <button class="btn create-btn">Create New</button>
+            <button class="btn login-btn">Login</button>
+        </div>
+
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h2 style="color: white;">Cultivating a Smarter Future for Agriculture</h2>
+            <p style="color: white;">
+                Unlock the potential of your farm with data-driven insights, inspiring success stories, and access to vital
+                government support.
+            </p>
+
+            <a href="{% url 'choose_farm' %}" class="your-glow-up-button-class">Glow Up Farm</a>
+
+        </div>
+    </section>
+
+    <section class="section" id="about">
+        <h2 class="section-title">About CropWay</h2>
+        <p>CropWay is dedicated to empowering the agricultural community with the knowledge and resources needed to thrive
+            in the modern era. We provide a platform that bridges the gap between traditional farming practices and
+            cutting-edge agricultural technologies. Our mission is to foster sustainable growth, improve livelihoods, and
+            ensure food security by offering accessible information on crop management, real-world success stories, and
+            relevant government schemes.</p>
+        <p>Whether you are an experienced farmer, a budding agri-entrepreneur, or simply interested in the future of
+            agriculture, CropWay is your trusted partner in navigating the complexities and opportunities of smart
+            farming.</p>
+    </section>
+
+    <section class="section" id="stories">
+        <h2 class="section-title">Inspiring Success Stories</h2>
+        <p>Discover how farmers across the region have leveraged innovative techniques and the support of government
+            initiatives to achieve remarkable results. These stories showcase the transformative power of informed
+            decision-making and the adoption of smart agricultural practices.</p>
+        <ul>
+            <li><strong>Mr. Senthil Kumar (Tamil Nadu):</strong> Increased his yield by 30% by implementing soil health
+                management techniques learned through CropWay resources and utilizing the PM-KISAN scheme for financial
+                support.</li>
+            <li><strong>Ms. Priya Sharma (Maharashtra):</strong> Successfully diversified her farm with guidance on weather-resilient crops and secured funding through the Agri-Startup program to establish a processing unit.</li>
+            <li><strong>A Farmer Cooperative (Karnataka):</strong> Implemented precision irrigation strategies based on CropWay's insights, leading to a significant reduction in water usage and improved crop quality, supported by RKVY infrastructure grants.</li>
+        </ul>
+        <p>Read more inspiring journeys and learn how you too can achieve success with CropWay.</p>
+    </section>
+
+    <section class="section" id="schemes">
+        <h2 class="section-title">Key Government Initiatives for Farmers</h2>
+        <p>Stay informed about the crucial government schemes designed to support the agricultural sector. We provide
+            easy-to-understand details about eligibility and benefits to help you access the resources you need.</p>
+        <ul>
+            <li><strong>PM-KISAN (Pradhan Mantri Kisan Samman Nidhi):</strong> A direct income support scheme providing
+                financial assistance to all landholding farmer families across the country. <em>Eligibility:</em> All
+                landholding farmer families. <em>Benefit:</em>₹6,000 per year, payable in three equal installments of ₹2,000
+                every four months.</li>
+            <li><strong>RKVY (Rashtriya Krishi Vikas Yojana):</strong> A state-led scheme focused on promoting
+                agri-infrastructure development and innovation in agriculture and allied sectors. <em>Eligibility:</em>
+                Projects proposed by State Governments. <em>Benefit:</em> Varies based on the project and state-specific
+                priorities.</li>
+            <li><strong>Agri-Startup Funding (Various Schemes):</strong> Initiatives aimed at providing financial support
+                and mentorship to startups in the agriculture technology space. <em>Eligibility:</em> Registered startups
+                with innovative solutions in agriculture. <em>Benefit:</em> Funding amounts can range from ₹15 lakhs to ₹1
+                crore or more, depending on the scheme and stage of the startup.</li>
+            <li><strong>Pradhan Mantri Fasal Bima Yojana (PMFBY):</strong> A crop insurance scheme to provide financial
+                support to farmers suffering crop loss/damage arising out of natural calamities, pests & diseases.
+                <em>Eligibility:</em> All farmers growing notified crops in notified areas. <em>Benefit:</em> Coverage
+                varies depending on the crop and sum insured.</li>
+        </ul>
+        <p>Explore the full range of government schemes and application processes through official portals linked on our
+            resources page.</p>
+    </section>
+
+    <section class="section" id="insights">
+        <h2 class="section-title">Data-Driven Farming Insights</h2>
+        <p>Unlock the power of information with our insights into modern farming techniques and trends. Learn how data
+            analytics, technology, and sustainable practices can optimize your farm's performance.</p>
+        <ul>
+            <li><strong>Soil Health Management:</strong> Understand the importance of soil testing, nutrient management, and
+                organic farming practices for long-term soil fertility and crop productivity.</li>
+            <li><strong>Integrated Pest and Disease Management (IPM):</strong> Discover eco-friendly strategies for
+                controlling pests and diseases, minimizing chemical inputs and protecting your crops.</li>
+            <li><strong>Weather-Resilient Crop Selection:</strong> Learn about choosing crops that are better suited to local
+                climatic conditions and strategies to mitigate the impact of weather variability.</li>
+            <li><strong>Precision Agriculture Technologies:</strong> Explore the benefits of using sensors, drones, and data
+                analytics for optimized irrigation, fertilization, and yield monitoring.</li>
+            <li><strong>Market Trends and Analysis:</strong> Stay updated on market demands and pricing forecasts to make
+                informed decisions about crop planning and sales.</li>
+        </ul>
+        <p>Empower your farming decisions with actionable insights from CropWay.</p>
+    </section>
+
+    <section class="section" id="contact">
+        <h2 class="section-title">Connect With CropWay</h2>
+        <p>We're here to support your journey towards smarter agriculture. If you have any questions, suggestions, or
+            partnership inquiries, please don't hesitate to reach out.</p>
+        <p>You can email us directly at <a href="mailto:info@cropway.com">info@cropway.com</a> or use the contact form
+            below:</p>
+        <form>
+            <input type="text" placeholder="Your Name" required>
+            <input type="email" placeholder="Your Email" required>
+            <textarea placeholder="Your Message" required></textarea>
+            <button type="submit">Send Message</button>
+        </form>
+    </section>
+
+    <footer>
+        &copy; 2025 CropWay. All rights reserved.
+    </footer>
+
+    <script>
+        // home.js
+
+        // Toggle mobile navigation menu
+        function toggleMenu() {
+            const hamburger = document.querySelector('.hamburger');
+            const mobileNav = document.getElementById('nav-links');
+            hamburger.classList.toggle('open');
+            mobileNav.classList.toggle('active');
+        }
+
+        // Smooth scroll for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Optional: Button animation (e.g., Learn More CTA)
+        const heroCTA = document.querySelector('.hero-cta');
+        if (heroCTA) {
+            heroCTA.addEventListener('mouseenter', () => {
+                heroCTA.style.transform = 'scale(1.05)';
+            });
+            heroCTA.addEventListener('mouseleave', () => {
+                heroCTA.style.transform = 'scale(1)';
+            });
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const aboutSection = document.querySelector('#about');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        aboutSection.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            observer.observe(aboutSection);
+        });
+    </script>
+</body>
+
+</html>

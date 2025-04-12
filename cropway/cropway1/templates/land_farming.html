@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Farming Advisory System</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1b4332, #2d6a4f, #40916c);
+      color: #fff;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+    }
+
+    form {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 1rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.7rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .submit-btn {
+      background: #a7c957;
+      color: #1b4332;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      margin-top: 1rem;
+      cursor: pointer;
+    }
+
+    .results {
+      display: none;
+      margin-top: 2rem;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+    }
+
+    .results.show {
+      display: block;
+    }
+
+    .section {
+      margin-bottom: 2rem;
+    }
+
+    h3 {
+      color: #f0fff4;
+    }
+
+    ul {
+      list-style-type: "🌱 ";
+      padding-left: 1.2rem;
+    }
+
+    p {
+      margin: 0.5rem 0;
+    }
+
+    .highlight {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🌾 Smart Farming Advisor</h1>
+      <p>Get personalized crop recommendations</p>
+    </div>
+
+    <form id="farmingForm">
+      <div class="form-group">
+        <label for="soilType">Soil Type</label>
+        <select id="soilType" name="soilType" required>
+          <option value="">Select soil type</option>
+          <option value="Black Soil">Black Soil</option>
+          <option value="Red Soil">Red Soil</option>
+          <option value="Alluvial Soil">Alluvial Soil</option>
+          <option value="Sandy Loam">Sandy Loam</option>
+          <option value="Loamy">Loamy</option>
+          <option value="Clay">Clay</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="waterAvailability">Water Availability</label>
+        <select id="waterAvailability" name="waterAvailability" required>
+          <option value="">Select water availability</option>
+          <option value="High">High</option>
+          <option value="Moderate">Moderate</option>
+          <option value="Low">Low</option>
+        </select>
+      </div>
+
+      <button type="submit" class="submit-btn">Get Recommendations 🚀</button>
+    </form>
+
+    <div class="results" id="results">
+      <div class="section">
+        <h3>Recommended Crops</h3>
+        <ul id="cropList"></ul>
+      </div>
+
+      <div class="section">
+        <h3>Total Cost</h3>
+        <p id="totalCost"></p>
+      </div>
+
+      <div class="section">
+        <h3>Disadvantages</h3>
+        <ul id="disadvantageList"></ul>
+      </div>
+
+      <div class="section">
+        <h3>How to Use the Crop</h3>
+        <ul id="usageList"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function getRecommendations(soilType, waterAvailability) {
+      const url = `/farming/recommend/?soilType=${soilType}&waterAvailability=${waterAvailability}`;
+      try {
+        const res = await fetch(url);
+        return await res.json();
+      } catch (err) {
+        console.error('Error:', err);
+        return [];
+      }
+    }
+
+    document.getElementById('farmingForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const soilType = document.getElementById('soilType').value;
+      const waterAvailability = document.getElementById('waterAvailability').value;
+
+      const crops = await getRecommendations(soilType, waterAvailability);
+
+      const cropList = document.getElementById('cropList');
+      const disadvantageList = document.getElementById('disadvantageList');
+      const usageList = document.getElementById('usageList');
+      const totalCost = document.getElementById('totalCost');
+      const results = document.getElementById('results');
+
+      cropList.innerHTML = '';
+      disadvantageList.innerHTML = '';
+      usageList.innerHTML = '';
+      totalCost.textContent = '';
+
+      crops.forEach(crop => {
+        cropList.innerHTML += `<li>${crop.name} - <span class="highlight">${crop.expected_yield || 'Yield Info N/A'}</span></li>`;
+        disadvantageList.innerHTML += `<li>${crop.disadvantages || 'Not specified'}</li>`;
+        usageList.innerHTML += `<li>${crop.usage || 'Usage info not available'}</li>`;
+      });
+
+      if (crops.length > 0 && crops[0].total_cost) {
+        totalCost.textContent = `₹${crops[0].total_cost.toLocaleString()} per acre`;
+      }
+
+      results.classList.add('show');
+      results.scrollIntoView({ behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>
